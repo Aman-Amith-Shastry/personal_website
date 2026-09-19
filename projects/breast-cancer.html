@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Histopathological Breast Cancer Classification — Aman Shastry</title>
+<meta name="description" content="Does learning fine-grained histological subtypes first improve the coarse benign/malignant call? Four architectures on BreakHis — Michigan Data Science Team.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Histopathological Breast Cancer Classification — Aman Shastry">
+<meta property="og:description" content="Does learning fine-grained histological subtypes first improve the coarse benign/malignant call? Four architectures on BreakHis — Michigan Data Science Team.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../index.html#research">&larr; Aman Shastry &middot; Research</a></p>
+    <h1>Histopathological Breast Cancer Classification</h1>
+    <p class="subtitle">Michigan Data Science Team &middot; Winter 2025 &middot; main contributor, Vision Transformer</p>
+    <p class="tags"><span>TensorFlow</span><span>Vision Transformer</span><span>ResNet</span><span>Bag of Visual Words</span><span>BreakHis</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      The publicly available BreakHis biopsy slides carry two labels at once: benign or malignant, and
+      one of eight finer histological subtypes. That setup poses a nice question &mdash; if you make a
+      model learn the subtypes first, does it get better at the coarse call that actually matters
+      clinically?
+    </p>
+    <p>
+      The intuition is that the binary label throws away structure the images plainly contain. A
+      fibroadenoma and a phyllodes tumor are both benign but look nothing alike, and forcing a model
+      to call them the same thing may be asking it to ignore exactly the features that separate them
+      from anything malignant. The alternative is to train on the eight subtypes and map the
+      predictions down to benign or malignant afterwards.
+    </p>
+    <p>
+      I built and trained the Vision Transformer arm and wrote up the cross-architecture comparison
+      for the team's poster. This was a six-person project under three leads &mdash; the other
+      architectures were other members' work.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Dataset</dt>
+      <dd>
+        BreakHis: 9,109 microscopy images of breast tumor tissue in total, of which the 7,909 that
+        are publicly downloadable &mdash; 2,480 benign and 5,429 malignant &mdash; are what we trained
+        on. Each is labeled both benign or malignant and with one of eight histological subtypes,
+        four of each. Split 80/20.
+      </dd>
+
+      <dt>The comparison</dt>
+      <dd>
+        Every architecture is trained twice on the same data: once directly on the benign/malignant
+        label, once on the eight subtypes with the predictions collapsed to binary afterwards. The
+        only thing that varies between the two runs is the label granularity, which is what makes the
+        difference attributable.
+      </dd>
+
+      <dt>Architectures</dt>
+      <dd>
+        Four of them, spanning the range from classical to modern: Bag of Visual Words over hand-built
+        local features, a convolutional network trained from scratch, a fine-tuned ResNet, and a
+        Vision Transformer. Running the same experiment across all four is what tells you whether an
+        effect is a property of the labeling or an artifact of one model's inductive bias.
+      </dd>
+
+      <dt>Vision Transformer</dt>
+      <dd>
+        My arm. Slides are tiled into patches and attention is computed over the whole image, so
+        unlike the CNN there is no locality prior forcing the model to build up from small
+        neighborhoods &mdash; useful on histopathology, where the diagnostic signal is often the
+        global arrangement of tissue rather than any one region of it. Built in TensorFlow.
+      </dd>
+
+      <dt>Result</dt>
+      <dd>
+        Learning the subtypes first helped every architecture, which I did not expect to hold so
+        uniformly across four models that fail in such different ways.
+      </dd>
+    </dl>
+
+    <p class="links">
+      <a href="../assets/Final%20Poster.pdf">Final poster (PDF)</a>
+    </p>
+  </section>
+
+  <section>
+    <h2>What I&rsquo;d do differently</h2>
+    <ul class="findings retro">
+      <li>
+        <strong>Take the preprocessing as seriously as the models.</strong> Augmentation and the
+        train/test split were handled at a baseline level &mdash; sensible defaults, not choices we
+        interrogated. Those decisions sit upstream of every architecture we compared, so they deserved
+        their own investigation, along with a tighter control on what was held fixed between the two
+        labeling conditions.
+      </li>
+      <li>
+        <strong>Put a confidence interval on the comparison.</strong> Training on the subtypes and
+        collapsing to binary came out ahead on every metric we looked at, but those are point
+        estimates from single runs. Bootstrap resampling across models would turn the comparison into
+        something we could actually test &mdash; intervals that either separate or overlap &mdash;
+        rather than a direction we observed and had to take at face value.
+      </li>
+    </ul>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

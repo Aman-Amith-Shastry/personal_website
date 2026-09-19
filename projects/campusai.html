@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampusAI — Aman Shastry</title>
+<meta name="description" content="CampusAI — a retrieval-augmented degree-planning assistant for University of Michigan students. Built over a hackathon weekend.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="CampusAI — Aman Shastry">
+<meta property="og:description" content="A retrieval-augmented degree-planning assistant for University of Michigan students. Built over a hackathon weekend.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../index.html#projects">&larr; Aman Shastry &middot; Projects</a></p>
+    <h1>CampusAI</h1>
+    <p class="subtitle">Hackathon &middot; 2026</p>
+    <p class="tags"><span>Python</span><span>FastAPI</span><span>LangChain</span><span>Qdrant</span><span>React</span><span>Vite</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      Planning a semester at Michigan means holding a degree audit, a course catalog, and a
+      requirements page in three tabs and reconciling them yourself. CampusAI is my attempt to just
+      ask the question instead.
+    </p>
+    <p>
+      It indexes the requirements for roughly sixty programs &mdash; Data Science in Engineering,
+      Computer Science in LSA, and everything else advising publishes &mdash; alongside the general
+      academic rules, then answers audit-style questions about what a student still owes and which of
+      the courses that satisfy it are actually being offered. The interesting constraint was that
+      requirement documents are prose, not a schema: "one of the following three sequences, unless
+      you have credit for" is the normal shape of the text. Retrieval over the source documents beat
+      trying to model any of that as a database in a weekend.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Corpus</dt>
+      <dd>
+        A scraper (<span class="code">requests</span> + BeautifulSoup) pulls each program's
+        requirement document, converting the Google Docs links advising publishes into their plain
+        text export before parsing, and writes one file per major. Academic rules and the program
+        list are kept as CSVs alongside them.
+      </dd>
+
+      <dt>Retrieval</dt>
+      <dd>
+        Documents are embedded with a sentence-transformers model and stored in a Qdrant vector
+        store, exposed to the model as a LangChain retriever tool &mdash; so lookup is a tool call
+        the model decides to make, rather than a fixed block of context stuffed into every prompt.
+      </dd>
+
+      <dt>Live course data</dt>
+      <dd>
+        A second tool queries the University's Schedule of Classes API by term, school, and subject
+        for the catalog numbers currently on offer. Requirements come from the indexed documents;
+        what is actually schedulable this term comes from the API, so answers do not recommend a
+        course nobody is teaching.
+      </dd>
+
+      <dt>Serving</dt>
+      <dd>FastAPI and uvicorn behind a React frontend built with Vite.</dd>
+    </dl>
+    <p>
+      It was built over a hackathon weekend and the repository still reads like it &mdash; the
+      retrieval path went through two rewrites in about thirty hours, and the code that survived is
+      the second one.
+    </p>
+  </section>
+
+  <section>
+    <h2>What I&rsquo;d do differently</h2>
+    <ul class="findings retro">
+      <li>
+        <strong>Converge faster on the idea.</strong> Most of day one went to ideating and getting the
+        repository set up. Neither was wasted, but a weekend has about thirty usable hours in it and
+        that was a large fraction of them spent before anything existed to iterate on.
+      </li>
+      <li>
+        <strong>Agree on the architecture before splitting up.</strong> We communicated, but not always
+        about the right thing &mdash; people knew what they were building without always knowing what
+        everyone else was. Settling the interfaces between the parts up front, or building the first
+        version of each together, would have made integration a step rather than a scramble.
+      </li>
+      <li>
+        <strong>Timebox the search for data sources.</strong> A lot of the weekend went into finding
+        APIs that would actually return what we needed. That search is real work and it happens on
+        every project like this, so it is worth treating as its own task with a deadline instead of
+        something to get through on the way to building.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <p class="links">
+      <a href="https://github.com/Aman-Amith-Shastry/campusai-hackathon" rel="noopener" target="_blank">GitHub</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

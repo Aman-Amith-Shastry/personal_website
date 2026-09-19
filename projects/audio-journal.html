@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Audio Journal — Aman Shastry</title>
+<meta name="description" content="Audio Journal — a spoken journaling app that reads sentiment from the audio itself, built on a fine-tuned WavLM model behind a FastAPI service.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Audio Journal — Aman Shastry">
+<meta property="og:description" content="A spoken journaling app that reads sentiment from the audio itself, built on a fine-tuned WavLM model behind a FastAPI service.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../projects.html">&larr; Aman Shastry &middot; Projects</a></p>
+    <h1>Audio Journal</h1>
+    <p class="subtitle">Google Developer Group &middot; 2025 &middot; team lead, 10 engineers</p>
+    <p class="tags"><span>PyTorch</span><span>WavLM</span><span>transformers</span><span>librosa</span><span>FastAPI</span><span>Docker</span><span>Flutter</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      A journaling app you talk to instead of type into. The idea the team got interested in was
+      reading sentiment out of the audio itself rather than a transcript &mdash; how something is said
+      carries more than the words do.
+    </p>
+    <p>
+      Transcribe an entry and you throw away the pauses, the pitch, the flatness of a bad day. So the
+      model never sees text at all: it works on the waveform, and the app tracks how entries move over
+      time rather than scoring any single one. Alongside the sentiment prediction the service returns
+      a handful of prosodic measurements, which turned out to be the part people found most
+      legible &mdash; a label is arguable, but "you spoke faster and quieter this week" is something
+      you can check against your own memory.
+    </p>
+    <p>
+      With ten people on it, most of my own work was structural: splitting the group across the model,
+      backend, and app layers, reshuffling as scope shifted, and keeping the three from drifting
+      apart.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Model</dt>
+      <dd>
+        WavLM-base from HuggingFace <span class="code">transformers</span> with a classification head
+        on top of the pooled hidden states &mdash; a linear layer down to 512, ReLU, dropout, then a
+        projection to the emotion labels &mdash; fine-tuned end to end on speech sentiment. Weights
+        live on the HuggingFace Hub and are pulled at container start rather than baked into the
+        image.
+      </dd>
+
+      <dt>Audio pipeline</dt>
+      <dd>
+        Entries arrive as recordings from the phone, which means <span class="code">.m4a</span>. The
+        service decodes them in memory with pydub, downmixes to mono, resamples to the 16&nbsp;kHz
+        WavLM expects with librosa, then runs the Wav2Vec2 feature extractor. Nothing touches disk.
+      </dd>
+
+      <dt>Prosodic metrics</dt>
+      <dd>
+        Computed with librosa in the same pass and returned with every prediction: speech rate, mean
+        loudness, mean pitch, and energy variability.
+      </dd>
+
+      <dt>Service</dt>
+      <dd>
+        A FastAPI endpoint that takes the URL of an entry and returns the class logits plus the
+        metrics as JSON, containerized with Docker so the Flutter client talks to a fixed contract
+        and the model can be swapped underneath it.
+      </dd>
+
+      <dt>Client</dt>
+      <dd>Flutter, handling recording, upload, and the history view.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <p class="links">
+      <a href="https://github.com/Aman-Amith-Shastry/audio_journal_api" rel="noopener" target="_blank">Model API &mdash; GitHub</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

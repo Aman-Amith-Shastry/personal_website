@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alzheimer's Detection from MRI Scans — Aman Shastry</title>
+<meta name="description" content="Four-class Alzheimer's staging from axial MRI — VGG-16 against ResNet-50 with Grad-CAM attribution. Michigan Data Science Team.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Alzheimer's Detection from MRI Scans — Aman Shastry">
+<meta property="og:description" content="Four-class Alzheimer's staging from axial MRI — VGG-16 against ResNet-50 with Grad-CAM attribution. Michigan Data Science Team.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../projects.html">&larr; Aman Shastry &middot; Projects</a></p>
+    <h1>Alzheimer's Detection from MRI Scans</h1>
+    <p class="subtitle">Michigan Data Science Team &middot; 2025 &middot; project co-lead</p>
+    <p class="tags"><span>PyTorch</span><span>torchvision</span><span>VGG-16</span><span>ResNet-50</span><span>Grad-CAM</span><span>Streamlit</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      Staging Alzheimer's from axial MRI across four levels of impairment &mdash; none, very mild,
+      mild, and moderate &mdash; instead of the usual healthy-versus-diseased split.
+    </p>
+    <p>
+      We chose the harder framing on purpose. The boundaries worth getting right clinically are the
+      early ones, and they are exactly the ones a binary model never has to learn: a classifier that
+      only separates healthy from diseased is free to lump very mild in with either side and still
+      look excellent. Four classes forces the question of whether the features actually distinguish
+      early decline from a healthy brain.
+    </p>
+    <p>
+      It was also the project I taught from. Most of my time on it went into walking members through
+      CNNs, residual-network fine-tuning, feature visualization, and ensembling, and writing the
+      notebooks they worked from. Each member trained their own architecture end to end rather than
+      inheriting a pipeline, and we compared the best result from each at the end &mdash; slower, but
+      they left having actually built something.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Data</dt>
+      <dd>
+        A public Kaggle collection of axial MRI slices, labeled across the four impairment levels
+        and balanced across classes in the training split.
+      </dd>
+
+      <dt>Models</dt>
+      <dd>
+        VGG-16 and ResNet-50 from torchvision, each with its final classifier replaced by a
+        four-output layer &mdash; the last entry of VGG's classifier block, the fully connected head
+        on the ResNet &mdash; then fine-tuned. Running both on identical splits is the point: it asks
+        whether the extra depth and the residual connections buy anything at this dataset size, or
+        whether the older, wider network is enough.
+      </dd>
+
+      <dt>Preprocessing</dt>
+      <dd>
+        One shared transform so the comparison stays honest: grayscale expanded to three channels,
+        resize to 256, center crop to 224, ImageNet normalization.
+      </dd>
+
+      <dt>Attribution</dt>
+      <dd>
+        A Grad-CAM implementation that registers forward and backward hooks on the last convolutional
+        block of whichever architecture it is handed &mdash; the final conv layer in VGG's feature
+        stack, the last residual stage in the ResNet &mdash; and produces a heatmap over the slice.
+        This is the check that matters on medical images: a model can score well while keying on the
+        skull outline or a scanner artifact, and the heatmap is how you catch it.
+      </dd>
+
+      <dt>Demo</dt>
+      <dd>
+        A Streamlit app so members can drop in a scan and see the prediction and its heatmap side by
+        side without touching the training code.
+      </dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <p class="links">
+      <a href="https://github.com/Aman-Amith-Shastry/mri-alzheimers-detection-mdst" rel="noopener" target="_blank">GitHub</a>
+      <a href="https://mdst.club/" rel="noopener" target="_blank">Michigan Data Science Team</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

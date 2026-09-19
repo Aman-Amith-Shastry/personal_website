@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Task Superposition in Large Language Models — Aman Shastry</title>
+<meta name="description" content="An activation-level test of whether mixed in-context tasks appear inside a transformer as a linear combination of task vectors — and what the linear description leaves out.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Task Superposition in Large Language Models — Aman Shastry">
+<meta property="og:description" content="An activation-level test of whether mixed in-context tasks appear inside a transformer as a linear combination of task vectors — and what the linear description leaves out.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../index.html#research">&larr; Aman Shastry &middot; Research</a></p>
+    <h1>Understanding Task Superposition in Large Language Models</h1>
+    <p class="subtitle">Independent &middot; 2026 &middot; sole author</p>
+    <p class="tags"><span>PyTorch</span><span>NumPy</span><span>Interpretability</span><span>Permutation tests</span><span>Bootstrap</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      Give a transformer in-context examples drawn from several different tasks and it behaves as though
+      it is holding all of them at once. I wanted to know whether that is literally true of the
+      representations &mdash; whether the residual stream really does carry a <em>linear superposition</em>
+      of the individual task vectors.
+    </p>
+    <p>
+      Task vectors are the starting point: a set of in-context demonstrations induces a latent vector in
+      the residual stream that summarizes the task, and that vector alone is enough to steer the model's
+      behavior on a held-out question. The natural extension is that a prompt mixing several tasks
+      induces a weighted combination of their individual vectors. That hypothesis had already been
+      supported behaviorally &mdash; through gold-token probabilities and low-dimensional
+      visualizations &mdash; but behavioral superposition does not imply that hidden representations
+      combine linearly. Something else could produce the same output distribution.
+    </p>
+    <p class="question">
+      Does the linear-combination hypothesis hold at the activation level in instruction-tuned models
+      &mdash; and if it does, what does the linear description leave out?
+    </p>
+    <p>
+      The answer turns out to be layered. The convex prediction is accurate at every depth I probe, and
+      flat across depth: nothing about the first-order geometry changes as you move through the network.
+      What changes is the part of the representation the prediction ignores. That orthogonal residual
+      grows steadily with depth, becomes statistically resolvable only in the middle layers and only for
+      task groups whose representations are well separated, and &mdash; regardless of whether it is
+      resolvable &mdash; is load-bearing: removing it perturbs the model's output more than removing any
+      random direction of the same length.
+    </p>
+    <p>
+      This is sole-authored work, submitted to BlackboxNLP. It covers five instruction-tuned models
+      across three families and 1B&ndash;8B parameters: Llama&nbsp;3.2&nbsp;1B, Llama&nbsp;3.2&nbsp;3B,
+      Llama&nbsp;3.1&nbsp;8B, Qwen&nbsp;2.5&nbsp;3B, and Gemma&nbsp;2&nbsp;2B.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Task groups</dt>
+      <dd>
+        Three of them, each isolating one axis of what "a different task" can mean. <strong>Arithmetic</strong>
+        varies the <em>question format</em> &mdash; the same two-integer sum presented as a direct sum, a
+        multiple-choice selection, or a verification of a proposed answer &mdash; while holding the
+        semantics fixed. <strong>Entity</strong> varies the <em>semantic relation</em>: a country mapped to
+        its capital, its currency, or its language. <strong>MMLU</strong> varies <em>task semantics</em> across
+        World History, Law, and Machine Learning while holding the multiple-choice format constant.
+        Separating these matters, because how separable the tasks are turns out to govern the main result.
+      </dd>
+
+      <dt>Prompt ratios</dt>
+      <dd>
+        Every prompt holds three in-context examples and one test question, and the tasks the examples are
+        drawn from vary: three pure ratios where all three examples come from one task, six two-task
+        mixes, and one prompt taking a single example from each. Because the mixing weights are set by the
+        prompt rather than inferred, the convex combination each mixed ratio predicts is known in advance.
+      </dd>
+
+      <dt>Contrast vectors</dt>
+      <dd>
+        Work on task vectors typically injects them into a zero-shot prompt, which implicitly treats the
+        zero-shot activation as a baseline. I make that baseline explicit: for each test question I take
+        the residual-stream state at the assistant-turn boundary token with the in-context examples
+        present, subtract the state for the same question with no examples, and analyze the difference.
+        Collected at layers spaced proportionally to each model's depth, so results are comparable across
+        model sizes.
+      </dd>
+
+      <dt>Fidelity, &kappa;</dt>
+      <dd>
+        How well the convex prediction describes a mixed ratio: the scalar projection of its observed
+        displacement onto the direction the prediction points.
+        &kappa;&nbsp;=&nbsp;1 means the prediction accounts for the observed
+        displacement exactly along its own direction; &kappa;&nbsp;=&nbsp;0 means complete orthogonality.
+        Because it is a projection, &kappa; is deliberately a <em>first-order</em> diagnostic: it can
+        establish that linear superposition captures the dominant structure, but not that it captures all
+        of it.
+      </dd>
+
+      <dt>Nulls and intervals</dt>
+      <dd>
+        A permutation test shuffles which mixed centroid is matched to which predicted combination, giving
+        an exact null against which the observed &kappa; is compared; 95% bootstrap intervals over prompt
+        samples quantify the uncertainty in the mean. Every reported &kappa; is read against both.
+      </dd>
+
+      <dt>The residual</dt>
+      <dd>
+        The component &kappa; is blind to, measured as the angle between the observed displacement and the
+        predicted one. A raw angle is not interpretable on its own, so it is calibrated against a
+        split-half sampling-noise floor: the angle between two independent half-sample estimates of the
+        <em>same</em> displacement, which is the best agreement the data can produce with itself. Their
+        ratio gives a resolvability score where 1 is the noise floor and anything above it is structure
+        the sampling variance cannot explain.
+      </dd>
+
+      <dt>Causal ablation</dt>
+      <dd>
+        Fit each ratio's average orthogonal residual on one set of questions, then subtract it from the
+        forward pass of a <em>disjoint</em> set and measure how far the next-token distribution moves. The
+        control arm removes a random direction, orthogonal to the prediction and rescaled to identical
+        norm, so the two arms differ only in <em>which</em> direction is removed &mdash; any gap is
+        attributable to direction alone.
+      </dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>What came out of it</h2>
+
+    <figure class="fig">
+      <img src="../assets/kappa_all_groups.png" alt="Three panels plotting mean kappa against relative layer depth for the arithmetic, entity, and MMLU task groups, with one line per model and a shaded band for one standard deviation across mixed ratios." loading="lazy" width="3200" height="1040">
+      <figcaption>
+        Mean &kappa; against relative layer depth for the three task groups. One line per model; the
+        dashed line marks &kappa;&nbsp;=&nbsp;1; the shaded band of each color is &plusmn;1&nbsp;std
+        across that model's mixed in-context ratios.
+      </figcaption>
+    </figure>
+
+    <ul class="findings">
+      <li>
+        <strong>The convex prediction holds, and it holds flatly.</strong> Mixed-task centroids land on the
+        ratio-weighted convex combination of the pure-task centroids, with bootstrap intervals clearing
+        the permutation null at its exact floor for every model, task group, and layer. Linear
+        superposition is a scale-accurate first-order description of mixed-task representations
+        throughout the network &mdash; not just at one convenient depth. What does grow with depth is the
+        spread across ratios, so a single scalar projection becomes steadily less descriptive of the full
+        geometry even as its mean stays put.
+      </li>
+      <li>
+        <strong>The residual grows with depth; its resolvability does not.</strong> The orthogonal
+        component increases monotonically or near-monotonically through the network in every task group.
+        But whether it becomes <em>statistically</em> resolvable is governed by task separability rather
+        than by its own size: for Arithmetic and Entity, increasing separation between the pure-task
+        displacements shrinks the sampling-noise floor until the residual clears it, giving an interior
+        peak at intermediate depth. MMLU's shared multiple-choice format keeps its task vectors weakly
+        separated and the floor correspondingly high, so its residual tracks the floor almost everywhere
+        and clears it only marginally, in only two of the five models. Decomposing the ascending run
+        confirms the mechanism differs by group: Arithmetic is residual-driven, Entity is floor-driven,
+        MMLU is floor-limited.
+      </li>
+      <li>
+        <strong>The residual is load-bearing, and it is the direction that matters.</strong> At
+        three-quarter depth, removing a ratio's held-out residual shifts the next-token distribution
+        further than every one of thirty norm-matched random orthogonal draws &mdash; in all six mixed
+        ratios, in all three task groups. Pooled, the ablation moves the distribution several times
+        further than the largest random draw does. And the same pipeline returns a null result exactly
+        where one is expected: at the shallowest probed layers, before the boundary token has aggregated
+        the in-context examples, there is no systematic residual to remove and the test correctly fails to
+        separate.
+      </li>
+      <li>
+        <strong>Magnitude, resolvability, and causal importance come apart.</strong> MMLU has the smallest
+        residual of the three groups and is the one group where the split-half test cannot resolve it
+        &mdash; yet its residual direction still beats random directions under ablation. The two tests
+        answer different questions, and the dissociation is the point: neither how big a direction is nor
+        whether you can distinguish it from noise tells you whether the model is using it.
+      </li>
+    </ul>
+
+    <p>
+      The conclusion I take from this is narrower than "superposition is linear" and more useful. The
+      first-order linear picture is right about scale &mdash; it predicts where mixed-task
+      representations sit, at every depth. But the structure it discards is not rounding error: it is
+      real, it is systematic, it organizes itself with depth, and the model's output depends on it.
+      Whatever a linear account of task composition is good for, it is not a complete account.
+    </p>
+  </section>
+
+  <section>
+    <h2>Limitations</h2>
+    <ul class="findings retro">
+      <li>
+        <strong>Scale is capped at 8B.</strong> Hardware, not choice. Whether the same depth- and
+        separability-resolved picture survives at larger scales is open.
+      </li>
+      <li>
+        <strong>The ablation runs on one model.</strong> The causal intervention is done on
+        Llama&nbsp;3.2&nbsp;3B alone, chosen arbitrarily among those tested; the geometry results cover
+        all five, but the causal claim does not.
+      </li>
+      <li>
+        <strong>MMLU's null is single-layer.</strong> Its prompts are roughly thirty times longer than the
+        other groups', and a full depth sweep of the patched forward passes did not fit the compute
+        budget. The headline causal claim is therefore read at the one depth where all three groups have
+        data, which also means MMLU contributes no shallow-layer negative control of its own.
+      </li>
+      <li>
+        <strong>The sweep stops at three-quarter depth.</strong> That is consistent with the emerging
+        account of how depth is used &mdash; the final layers sharpen the output distribution rather than
+        build the representations under study &mdash; but it is an assumption I inherit rather than one I
+        test.
+      </li>
+      <li>
+        <strong>Positional encoding is not controlled for.</strong> Linearity is demonstrated without
+        explicitly holding it fixed.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>What I&rsquo;d do differently</h2>
+    <ul class="findings retro">
+      <li>
+        <strong>Survey the field before setting the agenda.</strong> I started from wanting to test
+        whether the superposition was actually linear &mdash; and a proper reading of the
+        task-superposition literature would have told me sooner that the behavioral version of that claim
+        was already established, and that the genuinely open question was the representational one: does
+        it hold of the hidden states, and what does the first-order description miss? I got to that
+        question, but partway through, after spending effort confirming something the field already knew.
+        Reading first would have aimed the experiments at the open question from the start.
+      </li>
+      <li>
+        <strong>Build the pipeline before the results.</strong> The code grew alongside the experiments,
+        which meant checking things at the end rather than as they were produced. I would set it up the
+        other way round now &mdash; fixed interfaces, saved checkpoints between stages, and tests on the
+        intermediate quantities &mdash; so that each number is verified where it is computed instead of
+        trusted once it reaches a plot.
+      </li>
+      <li>
+        <strong>More compute, more models.</strong> Five models between 1B and 8B is what the hardware
+        allowed, and it is the binding constraint on how general the claim can be. A wider range of scales
+        and families would say much more about whether this geometry is a property of transformers or of
+        these particular transformers.
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <p class="links">
+      <a href="https://anonymous.4open.science/r/task_vector_superposition-FAFB" rel="noopener" target="_blank">Code &amp; methodology (anonymized for review)</a>
+    </p>
+    <p class="note">
+      The paper is under review and anonymized, so it is not linked here yet.
+    </p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

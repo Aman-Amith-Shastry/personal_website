@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scientific Computation MCP Server — Aman Shastry</title>
+<meta name="description" content="An MCP server giving language models exact linear algebra and vector calculus through NumPy and SymPy.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Scientific Computation MCP Server — Aman Shastry">
+<meta property="og:description" content="An MCP server giving language models exact linear algebra and vector calculus through NumPy and SymPy.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../projects.html">&larr; Aman Shastry &middot; Projects</a></p>
+    <h1>Scientific Computation MCP Server</h1>
+    <p class="subtitle">Independent &middot; 2025 &middot; sole author</p>
+    <p class="tags"><span>Python</span><span>MCP</span><span>NumPy</span><span>SymPy</span><span>matplotlib</span><span>Starlette</span><span>Docker</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      I kept watching language models talk their way through a matrix decomposition token by token and
+      get it subtly wrong, so I wrote a server that hands the work to NumPy and SymPy instead.
+    </p>
+    <p>
+      It exposes linear algebra, vector calculus, and plotting over the Model Context Protocol, so any
+      compatible client can call it as a tool. The failure it fixes is specific: a model asked for the
+      eigenvalues of a 4&times;4 matrix will produce something plausibly shaped and quietly off, and
+      nothing downstream flags it. Routing the computation to a numerical library means the answer is
+      either right or an error, never confidently wrong.
+    </p>
+    <p>
+      It was published on Smithery and indexed on Glama and LobeHub, and reached a peak of 25,000 tool
+      calls a month. That deployment is no longer active, so there is nothing hosted to connect to
+      &mdash; the source is still public and still runs locally or from the Docker image.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Server</dt>
+      <dd>
+        FastMCP from the Python MCP SDK, mounted inside a Starlette application with CORS so it can be
+        reached over HTTP as well as through a local stdio client. Shipped as a Docker image with a
+        Smithery manifest.
+      </dd>
+
+      <dt>Tensor store</dt>
+      <dd>
+        The design decision the rest hangs on: tensors are created once, given a name, and kept
+        server-side. Every subsequent tool takes names rather than arrays, so a model can build a
+        matrix, decompose it, change its basis, and take a determinant without ever serializing the
+        numbers back through its own context &mdash; which is both where the token cost lives and
+        where transcription errors creep in.
+      </dd>
+
+      <dt>Linear algebra</dt>
+      <dd>
+        NumPy underneath. Addition, subtraction, multiplication, and scaling with compatibility
+        checks; inverse, transpose, determinant, and rank; eigenvalues and eigenvectors; QR and SVD
+        factorization; orthonormal basis extraction; and change of basis.
+      </dd>
+
+      <dt>Vector calculus</dt>
+      <dd>
+        SymPy on a 3-D coordinate system, so the input is an expression rather than a grid of numbers
+        &mdash; <span class="code">gradient("x^2 + 2xyz + zy^3")</span> parses and differentiates
+        symbolically. Also projection, dot and cross products, curl, divergence, the Laplacian for
+        both scalar functions and vector fields, and directional derivatives with optional
+        normalization of the direction.
+      </dd>
+
+      <dt>Visualization</dt>
+      <dd>
+        matplotlib rendered through the Agg backend straight into a buffer and returned as an MCP
+        image &mdash; 3-D vector fields over configurable bounds, and 2-D or 3-D function plots. No
+        files, no display server.
+      </dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <p class="links">
+      <a href="https://github.com/Aman-Amith-Shastry/scientific_computation_mcp" rel="noopener" target="_blank">GitHub</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

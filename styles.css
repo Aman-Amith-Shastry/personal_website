@@ -1,0 +1,615 @@
+/* ---------------------------------------------------------------
+   Aman Shastry — personal site
+   Dark, single-column, print-adjacent. No external assets or fonts.
+   --------------------------------------------------------------- */
+
+:root {
+  --bg:        #0e1013;
+  --surface:   #14171c;
+  --surface-2: #191d23;
+  --border:    #262b33;
+  --border-soft: #1d222a;
+  --text:      #dfe3ea;
+  --text-dim:  #a4adbb;
+  --text-faint:#7b8493;
+  --accent:    #f5c542;   /* maize, desaturated so it doesn't glare on dark */
+  --accent-dim:#8a6f22;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  --sans:  ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+  --measure: 46rem;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Logical longhands only — shorthands here would out-specify the block-direction
+   padding/margin that `main`, `.tabs`, and `footer` set on themselves. */
+.wrap {
+  max-width: var(--measure);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+/* ---------- links ---------- */
+
+a {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--accent-dim);
+  transition: color .12s ease, border-color .12s ease;
+}
+a:hover, a:focus-visible {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+a:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--surface);
+  padding: .6rem 1rem;
+  border: 1px solid var(--border);
+  z-index: 10;
+}
+.skip-link:focus { left: 1rem; top: 1rem; }
+
+/* ---------- masthead ---------- */
+
+.masthead {
+  border-bottom: 1px solid var(--border);
+  padding: 4.5rem 0 2.25rem;
+  margin-bottom: 0;
+}
+
+/* Portrait sits beside the name; text column stays first in source order so it
+   leads on narrow screens where the two stack. */
+.masthead-inner {
+  display: flex;
+  align-items: center;
+  gap: 2.25rem;
+  justify-content: space-between;
+}
+.masthead-text { min-width: 0; }
+
+.portrait {
+  flex: 0 0 auto;
+  width: 8.5rem;
+  height: 8.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  filter: saturate(.92);
+}
+
+.masthead h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 6vw, 2.9rem);
+  font-weight: 600;
+  letter-spacing: .01em;
+  line-height: 1.15;
+}
+
+.subtitle {
+  margin: .6rem 0 1.1rem;
+  color: var(--text-dim);
+  font-size: 1.02rem;
+}
+
+.identity {
+  max-width: 35rem;
+  /* bottom margin carries the whole gap down to .contact now that nothing sits between them */
+  margin: .7rem 0 1.1rem;
+  color: var(--text);
+  font-size: 1.16rem;
+  line-height: 1.5;
+}
+
+.contact {
+  font-family: var(--sans);
+  font-size: .88rem;
+  letter-spacing: .01em;
+}
+.contact a { color: var(--text-dim); }
+.contact a:hover { color: var(--accent); }
+
+.sep {
+  color: var(--text-faint);
+  margin: 0 .5rem;
+}
+
+/* ---------- section nav ---------- */
+
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  font-family: var(--sans);
+  font-size: .78rem;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+}
+.tabs a {
+  color: var(--text-faint);
+  border-bottom: none;
+  padding-bottom: 2px;
+}
+.tabs a:hover, .tabs a:focus-visible {
+  color: var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+
+/* ---------- sections ---------- */
+
+main { padding-bottom: 2rem; }
+
+section {
+  padding-top: 2.75rem;
+  scroll-margin-top: 1.5rem;
+}
+
+section > h2 {
+  margin: 0 0 1.25rem;
+  padding-bottom: .5rem;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--sans);
+  font-size: .8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .16em;
+  color: var(--accent);
+}
+
+.section-note {
+  margin: -.6rem 0 1.4rem;
+  font-family: var(--sans);
+  font-size: .8rem;
+  color: var(--text-faint);
+}
+
+p { margin: 0 0 1rem; }
+section p:last-child { margin-bottom: 0; }
+
+strong { font-weight: 600; color: #eef1f6; }
+em { font-style: italic; }
+
+/* ---------- currently ---------- */
+
+.now-list {
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: .75rem;
+  list-style: none;
+}
+.now-list li {
+  display: grid;
+  grid-template-columns: 6.5rem 1fr;
+  gap: 1.1rem;
+  padding-bottom: .75rem;
+  border-bottom: 1px solid var(--border-soft);
+}
+.now-list li:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+.now-label {
+  font-family: var(--sans);
+  font-size: .75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  color: var(--accent);
+  padding-top: .18rem;
+}
+.now-text {
+  color: var(--text-dim);
+  font-size: .96rem;
+  line-height: 1.55;
+}
+
+/* ---------- entries (projects, roles, education) ---------- */
+
+.entry {
+  border: 1px solid var(--border-soft);
+  border-left: 2px solid var(--border);
+  background: var(--surface);
+  border-radius: 3px;
+  padding: 1.35rem 1.5rem;
+  margin-bottom: 1.1rem;
+  transition: border-left-color .15s ease, background .15s ease;
+}
+.entry:hover {
+  border-left-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.entry.featured {
+  border-left-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.entry-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: .35rem 1.25rem;
+  margin-bottom: .45rem;
+}
+
+.entry-head h3 {
+  margin: 0;
+  font-size: 1.13rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: .005em;
+}
+
+.featured .entry-head h3 { font-size: 1.2rem; }
+
+.meta {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: .74rem;
+  color: var(--text-faint);
+  letter-spacing: .02em;
+  white-space: nowrap;
+}
+
+.role {
+  margin: 0 0 .8rem;
+  font-family: var(--sans);
+  font-size: .85rem;
+  color: var(--text-dim);
+  font-style: normal;
+}
+
+.entry p { color: var(--text-dim); }
+.entry p strong { color: var(--text); }
+/* the framing question — pulled out of the prose on the index entry and on the
+   research detail page, so the selector has to cover both contexts */
+.entry p.question, .detail p.question {
+  margin: 0 0 1rem;
+  padding: .75rem .9rem;
+  border-left: 2px solid var(--accent-dim);
+  background: rgba(245, 197, 66, .045);
+  color: var(--text);
+  font-size: 1rem;
+}
+
+/* findings list on the featured entry */
+.findings {
+  margin: 0 0 1.1rem;
+  padding-left: 1.1rem;
+  color: var(--text-dim);
+}
+.findings li { margin-bottom: .55rem; }
+.findings li::marker { color: var(--accent-dim); }
+
+/* "What I'd do differently" — same list shape as .findings, set a step quieter so it
+   reads as commentary on the work rather than as another result. */
+.retro { color: var(--text-faint); font-size: .95rem; }
+.retro li::marker { color: var(--border); }
+.retro strong { color: var(--text-dim); font-weight: 600; }
+
+/* ---------- figure ---------- */
+
+.fig {
+  margin: 0 0 1.1rem;
+}
+.fig img {
+  display: block;
+  width: 100%;
+  height: auto;
+  background: #fff;          /* matplotlib figures ship a white canvas */
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: .5rem;
+}
+.fig figcaption {
+  margin-top: .55rem;
+  font-family: var(--sans);
+  font-size: .78rem;
+  line-height: 1.55;
+  color: var(--text-faint);
+}
+
+/* ---------- tags & links ---------- */
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .4rem;
+  margin: 0 0 .85rem;
+}
+.tags span {
+  font-family: var(--mono);
+  font-size: .7rem;
+  letter-spacing: .02em;
+  color: var(--text-faint);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: .15rem .45rem;
+  white-space: nowrap;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem;
+  margin: 0;
+  font-family: var(--sans);
+  font-size: .84rem;
+}
+.links a { color: var(--accent); border-bottom-color: var(--accent-dim); }
+
+/* quiet aside sitting under a links row — explains what is missing from it.
+   Compounded like .lede, since `.detail p` would otherwise win on specificity. */
+.note, .detail .note {
+  margin: .8rem 0 0;
+  color: var(--text-faint);
+  font-size: .9rem;
+}
+
+/* the "all projects" link that closes the index's projects section */
+.more-link { margin-top: 1.4rem; }
+
+/* ---------- project cards ----------
+   The whole card is one anchor, so it carries no nested links; the GitHub /
+   Smithery links live on the detail page it opens. Every border and color
+   declaration here has to out-specify the bare `a` rules above, which is why
+   the hover state is restated on `.card:hover` rather than inherited. */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.25rem 1.35rem;
+  border: 1px solid var(--border-soft);
+  border-left: 2px solid var(--border);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--text-dim);
+  transition: border-left-color .15s ease, background .15s ease;
+}
+.card:hover, .card:focus-visible {
+  border-color: var(--border-soft);
+  border-left-color: var(--accent);
+  background: var(--surface-2);
+  color: var(--text-dim);
+}
+
+.card-head {
+  display: flex;
+  flex-direction: column;
+  gap: .2rem;
+  margin-bottom: .6rem;
+}
+
+.card-title {
+  font-size: 1.08rem;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text);
+}
+.card:hover .card-title, .card:focus-visible .card-title { color: var(--accent); }
+
+.card-blurb {
+  display: block;
+  font-size: .95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* pushes the affordance to the bottom so cards of unequal text still line up */
+.card .tags { margin-top: auto; margin-bottom: .7rem; }
+
+.card-more {
+  font-family: var(--sans);
+  font-size: .78rem;
+  letter-spacing: .02em;
+  color: var(--text-faint);
+}
+.card:hover .card-more, .card:focus-visible .card-more { color: var(--accent); }
+
+/* ---------- project detail pages ---------- */
+
+.subhead { padding: 2.25rem 0 1.9rem; }
+
+.crumb {
+  margin: 0 0 1.4rem;
+  font-family: var(--sans);
+  font-size: .8rem;
+}
+.crumb a { color: var(--text-faint); border-bottom: none; }
+.crumb a:hover { color: var(--accent); }
+
+.subhead h1 {
+  margin: 0;
+  font-size: clamp(1.55rem, 4.4vw, 2.1rem);
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: .005em;
+}
+.subhead .subtitle {
+  margin: .55rem 0 1rem;
+  font-family: var(--mono);
+  font-size: .78rem;
+  color: var(--text-faint);
+}
+.subhead-note {
+  max-width: 38rem;
+  margin: .75rem 0 0;
+  color: var(--text-dim);
+  font-size: .98rem;
+}
+.subhead .tags { margin-bottom: 0; }
+
+.detail p { color: var(--text-dim); }
+/* used on both the About lede and the opening line of each project page,
+   so it has to outrank `.detail p` above */
+.lede, .detail .lede {
+  color: var(--text);
+  font-size: 1.14rem;
+}
+
+/* the one-line origin note under About — set apart from the prose above it */
+.origin {
+  margin: 1.5rem 0 0;
+  padding-top: .9rem;
+  border-top: 1px solid var(--border-soft);
+  font-family: var(--sans);
+  font-size: .85rem;
+  color: var(--text-faint);
+}
+
+/* stack breakdown — term on the left, what it does on the right */
+.stack {
+  margin: 1.1rem 0 0;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: .7rem 1.4rem;
+  font-size: .94rem;
+}
+.stack dt {
+  font-family: var(--sans);
+  font-size: .74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .09em;
+  color: var(--accent);
+  padding-top: .3rem;
+}
+.stack dd {
+  margin: 0;
+  color: var(--text-dim);
+}
+
+.detail .links { margin-top: 1.2rem; }
+
+.code {
+  font-family: var(--mono);
+  font-size: .86em;
+  color: var(--text);
+}
+
+/* ---------- earlier work ---------- */
+
+.earlier {
+  margin-top: 1.6rem;
+  border-top: 1px solid var(--border-soft);
+  padding-top: 1rem;
+}
+.earlier summary {
+  cursor: pointer;
+  font-family: var(--sans);
+  font-size: .8rem;
+  text-transform: uppercase;
+  letter-spacing: .11em;
+  color: var(--text-faint);
+}
+.earlier summary:hover { color: var(--accent); }
+.earlier summary::marker { color: var(--accent-dim); }
+
+.compact {
+  margin: 1rem 0 0;
+  padding-left: 1.1rem;
+  font-size: .93rem;
+  color: var(--text-faint);
+}
+.compact li { margin-bottom: .5rem; }
+.compact li::marker { color: var(--border); }
+.compact a { color: var(--text-dim); }
+.compact .meta { margin-left: .25rem; }
+
+/* ---------- definition lists ---------- */
+
+/* ---------- education ---------- */
+
+/* Deliberately plain prose, no card or panel chrome — the section reads as a note,
+   not as the education block of a CV. */
+.edu {
+  margin: 0 0 .9rem;
+  color: var(--text-dim);
+  font-size: .97rem;
+}
+.edu:last-child { margin-bottom: 0; }
+.edu strong { color: var(--text); font-weight: 600; }
+
+/* ---------- footer ---------- */
+
+footer {
+  margin-top: 3.5rem;
+  padding-top: 1.5rem;
+  padding-bottom: 3.5rem;
+  border-top: 1px solid var(--border);
+  font-family: var(--sans);
+  font-size: .84rem;
+  color: var(--text-faint);
+}
+footer a { color: var(--text-dim); }
+.colophon { margin: .4rem 0 0; color: var(--text-faint); font-size: .8rem; }
+
+/* ---------- responsive ---------- */
+
+@media (max-width: 34rem) {
+  body { font-size: 16px; }
+  .masthead { padding-top: 3rem; }
+  .masthead-inner { flex-direction: column-reverse; align-items: flex-start; gap: 1.5rem; }
+  .portrait { width: 6.5rem; height: 6.5rem; }
+  .entry { padding: 1.15rem 1.15rem; }
+  .entry-head { flex-direction: column; gap: .15rem; }
+  .cards { grid-template-columns: 1fr; }
+  .card { padding: 1.15rem 1.15rem; }
+  .now-list li { grid-template-columns: 1fr; gap: .15rem; }
+  .stack { grid-template-columns: 1fr; gap: .15rem; }
+  .stack dt { padding-top: .7rem; }
+  .tabs { gap: 1rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* ---------- print ---------- */
+
+@media print {
+  body { background: #fff; color: #111; font-size: 11pt; }
+  /* the colophon carries the program line now, so it has to survive printing */
+  .tabs, .skip-link { display: none; }
+  .entry, .card { background: none; border: none; border-left: 2px solid #ccc; padding: 0 0 0 .8rem; }
+  .cards { grid-template-columns: 1fr; gap: .9rem; }
+  .card, .card-title, .card-blurb { color: #111; }
+  .card-more, .crumb { display: none; }
+  a { color: #111; border: none; }
+  section > h2 { color: #111; }
+  .fig img { border: 1px solid #ccc; padding: 0; }
+}

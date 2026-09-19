@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projects — Aman Shastry</title>
+<meta name="description" content="Selected projects and notes by Aman Shastry: applied machine learning, LLM tooling, client-facing software, and earlier hardware work.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Projects — Aman Shastry">
+<meta property="og:description" content="Selected projects and notes: applied machine learning, LLM tooling, client-facing software, and earlier hardware work.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="index.html">&larr; Aman Shastry</a></p>
+    <h1>Projects</h1>
+    <p class="subtitle">Selected builds, notes, and earlier work</p>
+    <p class="subhead-note">
+      A smaller archive of things I have built while moving from applied ML projects toward LLM systems and interpretability research.
+    </p>
+  </div>
+</header>
+
+<main id="main" class="wrap">
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <p class="section-note">
+      Most recent first. The front page keeps only the strongest selected builds; this page keeps
+      the useful context around experiments, tools, and older work. CampusAI and the HomeRise portal
+      are on the <a href="index.html#projects">front page</a>, and the breast cancer classification
+      work is under <a href="index.html#research">research</a>.
+    </p>
+
+    <div class="cards">
+
+      <a class="card" href="projects/audio-journal.html">
+        <span class="card-head">
+          <span class="card-title">Audio Journal</span>
+          <span class="meta">GDG &middot; 2025</span>
+        </span>
+        <span class="card-blurb">
+          A journaling app you talk to instead of type into, built by a team of ten. It reads sentiment
+          out of the audio itself rather than a transcript, on the theory that how something is said
+          carries more than the words do.
+        </span>
+        <span class="tags"><span>PyTorch</span><span>WavLM</span><span>FastAPI</span><span>Flutter</span><span>Docker</span></span>
+        <span class="card-more">Read more &rarr;</span>
+      </a>
+
+      <a class="card" href="projects/alzheimers-mri.html">
+        <span class="card-head">
+          <span class="card-title">Alzheimer's Detection from MRI Scans</span>
+          <span class="meta">MDST &middot; 2025</span>
+        </span>
+        <span class="card-blurb">
+          Staging Alzheimer's from axial MRI across four levels of impairment instead of the usual
+          healthy-versus-diseased split. It was also the project I taught from &mdash; most of my time
+          on it went into taking members through CNNs and transfer learning.
+        </span>
+        <span class="tags"><span>PyTorch</span><span>CNNs</span><span>Grad-CAM</span><span>Medical imaging</span></span>
+        <span class="card-more">Read more &rarr;</span>
+      </a>
+
+      <a class="card" href="projects/scientific-computation-mcp.html">
+        <span class="card-head">
+          <span class="card-title">Scientific Computation MCP Server</span>
+          <span class="meta">Independent &middot; 2025</span>
+        </span>
+        <span class="card-blurb">
+          Language models are bad at doing linear algebra token by token, so I wrote a server that hands
+          the work to NumPy and SymPy instead. It peaked at 25,000 tool calls a month before I took the
+          hosted deployment down.
+        </span>
+        <span class="tags"><span>Python</span><span>MCP</span><span>NumPy</span><span>SymPy</span><span>Docker</span></span>
+        <span class="card-more">Read more &rarr;</span>
+      </a>
+
+    </div>
+
+    <details class="earlier">
+      <summary>Earlier work</summary>
+      <ul class="compact">
+        <li>
+          <a href="projects/skin-cancer.html">Skin cancer classification</a>
+          &mdash; benign versus malignant on dermoscopic lesion images, from before college and before
+          I understood most of what I was using. <span class="meta">2023</span>
+        </li>
+        <li>
+          <a href="https://github.com/Aman-Amith-Shastry/CO2-Detection-Arduino" rel="noopener" target="_blank">CO<sub>2</sub> detection rig</a>
+          &mdash; an Arduino sensor build logging carbon dioxide concentration, with a
+          <a href="https://github.com/Aman-Amith-Shastry/CO2-Emission-app" rel="noopener" target="_blank">companion Flutter app</a>
+          for reading it. <span class="meta">2023</span>
+        </li>
+        <li>
+          <a href="https://github.com/Aman-Amith-Shastry/Water-TDS-monitoring" rel="noopener" target="_blank">Water TDS monitor</a>
+          &mdash; measuring total dissolved solids in water off a microcontroller and a pair of
+          electrodes, without a commercial TDS meter. <span class="meta">2021</span>
+        </li>
+      </ul>
+    </details>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://www.linkedin.com/in/aman-shastry-26a92623b/" rel="noopener" target="_blank">LinkedIn</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

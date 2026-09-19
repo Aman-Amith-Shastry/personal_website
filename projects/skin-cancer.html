@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skin Cancer Classification — Aman Shastry</title>
+<meta name="description" content="An early project, from before college: benign versus malignant classification of dermoscopic lesion images with transfer learning, an ensemble, and a decision tree.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Skin Cancer Classification — Aman Shastry">
+<meta property="og:description" content="An early project, from before college: benign versus malignant classification of dermoscopic lesion images with transfer learning, an ensemble, and a decision tree.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../projects.html">&larr; Aman Shastry &middot; Projects</a></p>
+    <h1>Skin Cancer Classification</h1>
+    <p class="subtitle">Independent &middot; 2023 &middot; early work</p>
+    <p class="tags"><span>TensorFlow</span><span>Keras</span><span>ResNet-50</span><span>VGG-16</span><span>scikit-learn</span><span>OpenCV</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      One of my first machine learning projects, from before college: benign versus malignant
+      classification of dermoscopic lesion images.
+    </p>
+    <p>
+      I tried several approaches on the same problem &mdash; two pretrained networks, an ensemble of
+      the two, and a decision tree &mdash; and compared what each one scored. I was still learning how
+      these methods work at the time, and the project reflects that: it is a survey of techniques I
+      wanted to get my hands on rather than a considered argument for any one of them. I have left it
+      here because it is where I started, not because it is representative of how I work now.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Transfer learning</dt>
+      <dd>
+        ResNet-50 and VGG-16 with their ImageNet backbones frozen, each given a new classification
+        head, so only the head was trained on the lesion images.
+      </dd>
+
+      <dt>Ensemble</dt>
+      <dd>
+        The two networks combined in a weighted average of their outputs &mdash; the two architectures
+        disagree on different images, so averaging them recovers a little of what either one alone
+        misses.
+      </dd>
+
+      <dt>Decision tree</dt>
+      <dd>
+        A third approach rather than a reference point: a tree fitted directly on raw grayscale pixel
+        values, with no features engineered for it. It has no notion of shape, texture, or border
+        irregularity, so whatever it gets right it gets from brightness patterns alone.
+      </dd>
+
+      <dt>Evaluation</dt>
+      <dd>All four scored on the same held-out split, so nothing is compared across different data.</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Links</h2>
+    <p class="links">
+      <a href="https://github.com/Aman-Amith-Shastry/skin_cancer_data" rel="noopener" target="_blank">GitHub</a>
+    </p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

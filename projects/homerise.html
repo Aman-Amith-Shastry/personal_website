@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HomeRise Staff &amp; Resident Portal — Aman Shastry</title>
+<meta name="description" content="HomeRise Staff &amp; Resident Portal — a production Flutter and Firebase application built by an eight-engineer team for a residential care nonprofit.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="HomeRise Staff &amp; Resident Portal — Aman Shastry">
+<meta property="og:description" content="A production Flutter and Firebase application built by an eight-engineer team for a residential care nonprofit.">
+<meta property="og:type" content="article">
+<link rel="stylesheet" href="../styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead subhead">
+  <div class="wrap">
+    <p class="crumb"><a href="../index.html#projects">&larr; Aman Shastry &middot; Projects</a></p>
+    <h1>HomeRise Staff &amp; Resident Portal</h1>
+    <p class="subtitle">Google Developer Group &middot; 2026 &middot; team lead, 8 engineers</p>
+    <p class="tags"><span>Flutter</span><span>Dart</span><span>Firebase Auth</span><span>Firestore</span><span>Cloud Storage</span><span>GitHub Actions</span></p>
+  </div>
+</header>
+
+<main id="main" class="wrap detail">
+
+  <section>
+    <h2>Overview</h2>
+    <p class="lede">
+      A production web application eight of us built for HomeRise, a nonprofit that runs residential
+      care facilities. The portal handles staff authentication, daily roster scheduling, and resident
+      record management across multiple facility sites.
+    </p>
+    <p>
+      The work that mattered here was rarely the hard part technically. Care staff rotate between
+      sites, so who can see which resident's record changes by shift; the intake process had to stay
+      usable by someone filling it in on a phone in a hallway; and the client's requirements kept
+      moving as they discovered what they actually wanted, which is normal and which the architecture
+      had to absorb rather than resist.
+    </p>
+    <p>
+      My part was the delivery side &mdash; sprint planning, client check-ins, splitting the work
+      across eight engineers, and getting to an on-time handoff. The application is private-facing, so
+      there is no public link.
+    </p>
+  </section>
+
+  <section>
+    <h2>How it works</h2>
+    <dl class="stack">
+      <dt>Portal</dt>
+      <dd>
+        The main staff portal is a Flutter application, structured around a modular page system with
+        centralized routing. The team settled on that shape deliberately: with requirements still
+        moving, we wanted adding a screen to stay a small change rather than a refactor.
+      </dd>
+
+      <dt>Intake form</dt>
+      <dd>
+        A separate form written in plain HTML and JavaScript, kept outside the Flutter app so it
+        loads fast on a phone and can be handed to someone without an account.
+      </dd>
+
+      <dt>Auth</dt>
+      <dd>
+        Firebase Auth, with roles driving what each staff member can see &mdash; the scheduling views
+        and the resident records are gated differently.
+      </dd>
+
+      <dt>Data</dt>
+      <dd>
+        Firestore holds staff and resident documents and streams them in real time, so a roster edit
+        made at one site shows up without a refresh. Cloud Storage holds facility assets.
+      </dd>
+
+      <dt>Automation</dt>
+      <dd>
+        Daily wellness-check emails go out from a GitHub Actions workflow on a cron schedule. It is
+        not the textbook place to put a recurring job, but it let us ship one without standing up and
+        billing a server for a task that runs once a day &mdash; a reasonable trade for a nonprofit
+        handover.
+      </dd>
+    </dl>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="../index.html">Back to index</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+  </p>
+</footer>
+
+</body>
+</html>

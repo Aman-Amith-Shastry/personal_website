@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aman Shastry</title>
+<meta name="description" content="Aman Shastry — Data Science at the University of Michigan. Mechanistic interpretability, representation learning, applied machine learning, and AI systems.">
+<meta name="author" content="Aman Shastry">
+<meta property="og:title" content="Aman Shastry">
+<meta property="og:description" content="Mechanistic interpretability, representation learning, applied machine learning, and AI systems.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%230e1013'/><text y='.9em' x='.12em' font-size='78' font-family='Georgia,serif' fill='%23f5c542'>A</text></svg>">
+</head>
+<body>
+
+<a class="skip-link" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap masthead-inner">
+    <div class="masthead-text">
+      <h1>Aman Shastry</h1>
+      <p class="identity">
+        I am interested in understanding what happens inside neural networks when they learn,
+        represent, and reason about information.
+      </p>
+      <nav class="contact" aria-label="Contact and profiles">
+        <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="https://www.linkedin.com/in/aman-shastry-26a92623b/" rel="me noopener" target="_blank">LinkedIn</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="https://github.com/Aman-Amith-Shastry" rel="me noopener" target="_blank">GitHub</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <a href="assets/Aman_Shastry_Resume.pdf">Resume (PDF)</a>
+      </nav>
+    </div>
+
+    <!-- PORTRAIT — assets/portrait.jpg is a 700x700 face-centered crop of assets/profile_pic.jpg
+         with EXIF stripped. Regenerate it, don't point this at the full-frame original. -->
+    <img class="portrait" src="assets/portrait.jpg" alt="Aman Shastry" width="700" height="700">
+  </div>
+</header>
+
+<nav class="tabs wrap" aria-label="Sections">
+  <a href="#currently">Currently</a>
+  <a href="#about">About</a>
+  <a href="#research">Research</a>
+  <a href="#projects">Projects</a>
+  <a href="#experience">Experience</a>
+  <a href="#education">Education</a>
+</nav>
+
+<main id="main" class="wrap">
+
+  <!-- CURRENTLY -->
+  <section id="currently">
+    <h2>Currently</h2>
+    <ul class="now-list">
+      <li>
+        <span class="now-label">Research</span>
+        <span class="now-text">Testing when linear task-vector intuitions explain mixed in-context behavior, and where the residual structure becomes meaningful.</span>
+      </li>
+      <li>
+        <span class="now-label">Building</span>
+        <span class="now-text">AI systems that connect retrieval, tooling, and real users, including CampusAI and client-facing GDG projects.</span>
+      </li>
+      <li>
+        <span class="now-label">Next</span>
+        <span class="now-text">Starting a Customer Success Engineer co-op at IBM this fall while continuing to sharpen my research direction.</span>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2>About</h2>
+    <p class="lede">
+      I am a Data Science student at the University of Michigan interested in understanding how neural
+      networks represent and process information. My current research focuses on mechanistic
+      interpretability and representation learning in large language models, with a particular interest
+      in the geometry of neural representations and how different capabilities are encoded within them.
+    </p>
+    <p>
+      I am broadly interested in machine learning, AI, and the mathematical structure underlying neural
+      networks. I like research that sits between theory and experiment: taking an abstract hypothesis,
+      making it measurable, and using experiments to find where the intuition holds &mdash; and where it
+      breaks.
+    </p>
+    <p class="origin">
+      Born in Bangalore, raised in Georgia, and now in Ann Arbor.
+    </p>
+  </section>
+
+  <!-- RESEARCH -->
+  <section id="research">
+    <h2>Research</h2>
+
+    <article class="entry featured">
+      <div class="entry-head">
+        <h3>Understanding Task Superposition in Large Language Models</h3>
+        <span class="meta">Independent &middot; 2026</span>
+      </div>
+      <p class="role">Sole author &middot; formal title: <em>Beyond First-Order Task Vector Superposition: Orthogonal Residuals in In-Context Learning</em></p>
+      <p class="question">
+        Do mixed in-context tasks actually appear inside a transformer as a linear combination of task-specific representations?
+      </p>
+      <p>
+        Give a transformer a mix of in-context tasks and it behaves as though it is holding all of them
+        at once. That result is behavioral, and what I wanted to know is whether it is literally true of
+        the representations &mdash; whether the model's residual stream really does carry a
+        <em>linear superposition</em> of the individual task vectors, or whether the behavior arises
+        some other way. This is an activation-level test of that claim across five instruction-tuned
+        models spanning three families and 1B&ndash;8B parameters (Llama-3.2-1B/3B, Llama-3.1-8B,
+        Qwen-2.5-3B, Gemma-2-2B).
+      </p>
+      <ul class="findings">
+        <li>
+          <strong>Geometry.</strong> Mixed-task centroids land on the ratio-weighted convex combination
+          of pure-task centroids (&kappa;&nbsp;&approx;&nbsp;1), significant at the floor
+          <em>p</em>&nbsp;=&nbsp;1/720 of an exact permutation null for every model, task group, and layer.
+        </li>
+        <li>
+          <strong>The orthogonal residual.</strong> The component &kappa; is blind to, calibrated against a
+          split-half sampling-noise floor: its magnitude grows with depth while its resolvability above
+          the floor peaks in the middle layers, yielding three regimes governed by task separability.
+        </li>
+        <li>
+          <strong>Causal ablation.</strong> Surgically removing each ratio's systematic residual shifts the
+          next-token distribution far more than a norm-matched random orthogonal direction &mdash; showing
+          magnitude, resolvability, and causal importance are three distinct properties.
+        </li>
+      </ul>
+      <figure class="fig">
+        <img src="assets/kappa_all_groups.png" alt="Three panels plotting mean kappa against relative layer depth for the arithmetic, entity, and MMLU task groups, with one line per model and a shaded band for one standard deviation across mixed ratios." loading="lazy" width="3200" height="1040">
+        <figcaption>
+          Mean &kappa; (linear superposition fidelity) against relative layer depth for the three task
+          groups. One line per model; dashed line marks &kappa;&nbsp;=&nbsp;1; shaded band is
+          &plusmn;1&nbsp;std across mixed in-context ratios.
+        </figcaption>
+      </figure>
+      <p class="tags"><span>PyTorch</span><span>NumPy</span><span>Interpretability</span><span>Permutation tests</span></p>
+      <p class="links">
+        <a href="projects/task-vector-superposition.html">Write-up</a>
+        <a href="https://anonymous.4open.science/r/task_vector_superposition-FAFB" rel="noopener" target="_blank">Code &amp; methodology (anonymized for review)</a>
+      </p>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Comparative Evaluation of Vision-Based Models for Histopathological Breast Cancer Classification</h3>
+        <span class="meta">MDST &middot; Winter 2025</span>
+      </div>
+      <p class="role">Team project &middot; main contributor, Vision Transformer</p>
+      <p>
+        The BreakHis biopsy slides carry two labels at once: benign or malignant, and one of eight finer
+        histological subtypes. A six-person team asked whether making a model learn the subtypes first
+        improves the coarse call that matters clinically, and trained four architectures twice each
+        &mdash; once on the binary label, once on the subtypes with predictions collapsed afterwards
+        &mdash; so that label granularity was the only thing varying. I built the Vision Transformer arm
+        and wrote up the cross-architecture comparison. It was a semester-long student project rather
+        than a full study, but it was the first time I designed an experiment where the comparison, not
+        the model, was the point.
+      </p>
+      <p class="tags"><span>TensorFlow</span><span>Vision Transformer</span><span>ResNet</span><span>Bag of Visual Words</span><span>BreakHis</span></p>
+      <p class="links">
+        <a href="projects/breast-cancer.html">Write-up</a>
+        <a href="assets/Final%20Poster.pdf">Poster (PDF)</a>
+      </p>
+    </article>
+  </section>
+
+  <!-- PROJECTS -->
+  <section id="projects">
+    <h2>Projects</h2>
+    <p class="section-note">Selected builds that complement the research above. The rest are on the <a href="projects.html">projects page</a>.</p>
+
+    <div class="cards">
+
+      <a class="card" href="projects/campusai.html">
+        <span class="card-head">
+          <span class="card-title">CampusAI</span>
+          <span class="meta">Hackathon &middot; 2026</span>
+        </span>
+        <span class="card-blurb">
+          Degree planning at Michigan means reconciling an audit, a course catalog, and a requirements
+          page across three browser tabs. CampusAI indexes all of it and answers the question directly
+          instead.
+        </span>
+        <span class="tags"><span>Python</span><span>FastAPI</span><span>RAG</span><span>Qdrant</span><span>React</span></span>
+        <span class="card-more">Read more &rarr;</span>
+      </a>
+
+      <a class="card" href="projects/homerise.html">
+        <span class="card-head">
+          <span class="card-title">HomeRise Staff &amp; Resident Portal</span>
+          <span class="meta">GDG &middot; 2026</span>
+        </span>
+        <span class="card-blurb">
+          A production staff and resident portal eight of us built for a nonprofit running residential
+          care facilities. Flutter on Firebase, with the daily wellness checks automated out of a
+          scheduled GitHub Actions workflow.
+        </span>
+        <span class="tags"><span>Flutter</span><span>Firebase</span><span>Firestore</span><span>GitHub Actions</span></span>
+        <span class="card-more">Read more &rarr;</span>
+      </a>
+
+    </div>
+
+    <p class="links more-link">
+      <a href="projects.html">All projects &rarr;</a>
+    </p>
+  </section>
+
+  <!-- EXPERIENCE -->
+  <section id="experience">
+    <h2>Experience</h2>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Michigan Data Science Team</h3>
+        <span class="meta">Jan 2025 &ndash; present</span>
+      </div>
+      <p class="role">Project Lead &middot; Ann Arbor, MI</p>
+      <p>
+        I led the Alzheimer's MRI detection project through to completion, which was as much a
+        teaching role as a technical one &mdash; I took members through CNNs, residual-network
+        fine-tuning, feature visualization, and ensembling, and I learned most of this material
+        properly by having to explain it. Before leading, I built the Vision Transformer for the
+        team's histopathological breast cancer classification project.
+      </p>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>Google Developer Group</h3>
+        <span class="meta">Sep 2024 &ndash; present</span>
+      </div>
+      <p class="role">President &middot; Ann Arbor, MI</p>
+      <p>
+        I run our client-facing engineering teams, which mostly means matching student engineers to
+        nonprofits that need software and then making sure something actually ships. I led the eight
+        engineers on the HomeRise staff and resident portal and a team of ten on Audio Journal. Our
+        teams also built a modular web application for the
+        <a href="https://www.hshv.org/" rel="noopener" target="_blank">Humane Society of Huron Valley</a>
+        that replaced their paper volunteer and foster-pet workflows, and worked with the Nevada
+        Homelessness Alliance, alongside Developers for Good, on a mobile app connecting people to
+        food, shelter, and health resources. None of these are solo projects &mdash; the interesting
+        problem is usually organizational rather than technical, and real clients on real deadlines
+        have taught me more about scoping than any class has.
+      </p>
+    </article>
+
+    <article class="entry">
+      <div class="entry-head">
+        <h3>ExaThought</h3>
+        <span class="meta">Sep 2023 &ndash; Dec 2023</span>
+      </div>
+      <p class="role">Software Developer Intern &middot; Remote</p>
+      <p>
+        Developed and deployed the password reset and contact flows for an e-signature application in
+        Next.js, and explored Node.js API endpoints for integration into those pages. Worked inside an
+        agile process &mdash; daily standups, bi-weekly sprints, and version control through Git.
+      </p>
+    </article>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education">
+    <h2>Education</h2>
+
+    <p class="edu">
+      <strong>University of Michigan, Ann Arbor</strong> &mdash; B.S.E. Data Science with a minor in
+      Mathematics, expected May 2028. The courses that actually show up in the work above are machine
+      learning, applied regression analysis, applied linear algebra, and data structures and
+      algorithms.
+    </p>
+    <p class="edu">
+      <strong>Tools</strong> &mdash; Python and C++ day to day, PyTorch with NumPy and Pandas around
+      it, Flutter and React when something needs a front end, and Arduino or an ESP32 when it needs a
+      sensor.
+    </p>
+  </section>
+
+</main>
+
+<footer class="wrap">
+  <p>
+    <a href="mailto:amanas@umich.edu">amanas@umich.edu</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://www.linkedin.com/in/aman-shastry-26a92623b/" rel="noopener" target="_blank">LinkedIn</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="https://github.com/Aman-Amith-Shastry" rel="noopener" target="_blank">GitHub</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="assets/Aman_Shastry_Resume.pdf">Resume (PDF)</a>
+  </p>
+  <p class="colophon">B.S.E. Data Science &middot; Mathematics minor &middot; University of Michigan, Ann Arbor.</p>
+</footer>
+
+</body>
+</html>
